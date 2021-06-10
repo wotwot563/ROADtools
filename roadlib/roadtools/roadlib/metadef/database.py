@@ -154,7 +154,6 @@ class OAuth2PermissionGrant(Base, SerializeMixin):
 
 class User(Base, SerializeMixin):
     __tablename__ = "Users"
-    UniqueId = Column(Integer, primary_key=True)
     objectType = Column(Text)
     objectId = Column(Text, primary_key=True)
     deletionTimestamp = Column(DateTime)
@@ -289,6 +288,7 @@ class User(Base, SerializeMixin):
     ownedDevices = relationship("Device",
         secondary=lnk_device_owner,
         back_populates="owner")
+    UniqueId = Column(Integer, primary_key=True)
 
 
 class ServicePrincipal(Base, SerializeMixin):
