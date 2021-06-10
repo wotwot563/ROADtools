@@ -135,10 +135,12 @@ class DataDumper(object):
         self.engine = engine
         self.ahsession = ahsession
 
-    async def dump_object(self, objecttype, dbtype, method=None):
+    async def dump_object(self, objecttype, dbtype, method=None, filter=None):
         if method is None:
             method = self.ahsession.get
         url = 'https://graph.windows.net/%s/%s?api-version=1.61-internal' % (self.tenantid, objecttype)
+        if filter:
+            url += "&filter=" % (filter)
         cache = []
         async for obj in dumphelper(url, method=method):
             cache.append(obj)
@@ -339,7 +341,7 @@ async def run(args, dburl):
         print('Starting data gathering phase 1 of 2 (collecting objects)')
         dumper.ahsession = ahsession
         tasks = []
-        tasks.append(dumper.dump_object('users', User))
+        tasks.append(dumper.dump_object('users', User, None, "usageLocation eq 'PL'"))
         tasks.append(dumper.dump_object('tenantDetails', TenantDetail))
         tasks.append(dumper.dump_object('policies', Policy))
         tasks.append(dumper.dump_object('servicePrincipals', ServicePrincipal))
