@@ -80,8 +80,12 @@ def checktoken():
             print('Refreshed token')
             return True
         elif time.time() > expiretime:
-            print('Access token is expired, but no access to refresh token! Dumping will fail')
-            return False
+            print('Access token is expired, Waiting for the auth file to be updated')
+            token = json.load(input("Enter the authfile content here: "))
+            headers['Authorization'] = '%s %s' % (token['tokenType'], token['accessToken'])
+            expiretime = time.time() + token['expiresIn']
+            print('Refreshed token')
+            return True
     return True
 
 async def dumpsingle(url, method):
